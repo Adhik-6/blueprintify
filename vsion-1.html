@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR/VR BLUEPRINTIFY </title>
+  
+  <style>
+    body {
+      background: #0a0f1f;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      text-align: center;
+      max-width: 500px;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.05);
+      background-image: url(https://backiee.com/static/wallpapers/560x315/295094.jpg);
+      border-radius: 20px;
+      box-shadow: 0 0 20px #00f7ff;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #00f7ff;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      text-align: left;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      font-size: 1rem;
+    }
+    button {
+      background: #00f7ff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #00c2c2;
+    }
+    pre {
+      background: #1c1c2b;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+      text-align: left;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AR/VR BLUEPRINTIFY</h1>
+    <h2>where dreams come into reality by simply filling the fields</h2>
+    <form id="blueprintForm">
+      <label>Number of Rooms</label>
+      <input type="number" id="rooms" required>
+      
+      <label>Number of Parkings</label>
+      <input type="number" id="parkings" required>
+      
+      <label>Number of Balconies</label>
+      <input type="number" id="balconies" required>
+      
+      <label>Number of Bathrooms</label>
+      <input type="number" id="bathrooms" required>
+      
+      <label>Number of Halls</label>
+      <input type="number" id="halls" required>
+      
+      <label>Number of Bedrooms</label>
+      <input type="number" id="bedrooms" required>
+      
+      <label>Other Specific Room (optional)</label>
+      <input type="text" id="other">
+      
+      <button type="button" onclick="generateCode()">Generate Python Code</button>
+    </form>
+    <pre id="output"></pre>
+  </div>
+<script>
+  function generateCode() {
+    const rooms = document.getElementById("rooms").value;
+    const parkings = document.getElementById("parkings").value;
+    const balconies = document.getElementById("balconies").value;
+    const bathrooms = document.getElementById("bathrooms").value;
+    const halls = document.getElementById("halls").value;
+    const bedrooms = document.getElementById("bedrooms").value;
+    const other = document.getElementById("other").value;
+
+    let code = `import unreal
+
+# Auto-generated Unreal Engine Blueprint Script
+# Spawns cubes to represent different rooms
+
+def spawn_cube(name, x, y, z, scale=(200,200,200)):
+    location = unreal.Vector(x, y, z)
+    rotation = unreal.Rotator(0.0, 0.0, 0.0)
+    cube = unreal.EditorLevelLibrary.spawn_actor_from_class(
+        unreal.EditorAssetLibrary.load_blueprint_class('/Engine/BasicShapes/Cube'),
+        location,
+        rotation
+    )
+    cube.set_actor_scale3d(unreal.Vector(scale[0]/100, scale[1]/100, scale[2]/100))
+    cube.set_actor_label(name)
+    return cube
+
+offset = 0
+
+# Rooms
+for i in range(${rooms}):
+    spawn_cube(f"Room_{i+1}", offset, 0, 0)
+    offset += 300
+
+# Parkings
+for i in range(${parkings}):
+    spawn_cube(f"Parking_{i+1}", offset, 0, 0, (400,200,100))
+    offset += 300
+
+# Balconies
+for i in range(${balconies}):
+    spawn_cube(f"Balcony_{i+1}", offset, 0, 0, (150,150,100))
+    offset += 300
+
+# Bathrooms
+for i in range(${bathrooms}):
+    spawn_cube(f"Bathroom_{i+1}", offset, 0, 0, (150,150,200))
+    offset += 300
+
+# Halls
+for i in range(${halls}):
+    spawn_cube(f"Hall_{i+1}", offset, 0, 0, (500,400,300))
+    offset += 600
+
+# Bedrooms
+for i in range(${bedrooms}):
+    spawn_cube(f"Bedroom_{i+1}", offset, 0, 0, (300,300,200))
+    offset += 400
+
+# Other room
+if "${other}".strip():
+    spawn_cube("${other}", offset, 0, 0, (250,250,200))
+`;
+
+    document.getElementById("output").textContent = code;
+  }
+</script>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR/VR BLUEPRINTIFY</title>
+  <style>
+    body {
+      background: #0a0f1f;
+      color: #e0e0e0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+    }
+    .container {
+      text-align: center;
+      max-width: 500px;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.05);
+      background-image: url(https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDI1LTAxL3Jhd3BpeGVsb2ZmaWNlOF9taW5pbWFsX2lsbHVzdHJhdGlvbl9vZl9zaW1wbGVfYWJzdHJhY3RfY3VydmVfbF8wMzNkYjIzZS1iZmRlLTRlOGYtYjkwNy1mZDQ0NzNlMzYwYzZfMS5qcGc.jpg);
+      border-radius: 20px;
+      box-shadow: 0 0 20px #00f7ff;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #00f7ff;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      text-align: left;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      font-size: 1rem;
+    }
+    button {
+      background: #00f7ff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #00c2c2;
+    }
+    pre {
+      background: #1c1c2b;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+      text-align: left;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AR/VR BLUEPRINTIFY</h1>
+    <form id="blueprintForm">
+      <label>Number of Rooms</label>
+      <input type="number" id="rooms" required>
+      
+      <label>Number of Parkings</label>
+      <input type="number" id="parkings" required>
+      
+      <label>Number of Balconies</label>
+      <input type="number" id="balconies" required>
+      
+      <label>Number of Bathrooms</label>
+      <input type="number" id="bathrooms" required>
+      
+      <label>Number of Halls</label>
+      <input type="number" id="halls" required>
+      
+      <label>Number of Bedrooms</label>
+      <input type="number" id="bedrooms" required>
+      
+      <label>Other Specific Room (optional)</label>
+      <input type="text" id="other">
+
+      <label>Square Feet (approx per room)</label>
+      <input type="number" id="sqft" required>
+      
+      <button type="button" onclick="generateCode()">Generate Unity C# Script</button>
+    </form>
+    <pre id="output"></pre>
+  </div>
+
+  <script>
+    function generateCode() {
+      const rooms = document.getElementById("rooms").value;
+      const parkings = document.getElementById("parkings").value;
+      const balconies = document.getElementById("balconies").value;
+      const bathrooms = document.getElementById("bathrooms").value;
+      const halls = document.getElementById("halls").value;
+      const bedrooms = document.getElementById("bedrooms").value;
+      const other = document.getElementById("other").value;
+      const sqft = document.getElementById("sqft").value;
+
+      // scale calculation: assume 1 unit = 10 square feet
+      const scaleFactor = Math.sqrt(sqft / 10).toFixed(1);
+
+      let code = `using UnityEngine;
+
+public class HouseBlueprint : MonoBehaviour
+{
+    void Start()
+    {
+        float offset = 0f;
+        float unitScale = ${scaleFactor}f; // scale derived from square feet input
+
+        // Rooms
+        for (int i = 0; i < ${rooms}; i++)
+        {
+            CreateCube("Room_" + (i+1), new Vector3(offset, 0, 0), new Vector3(unitScale, unitScale, 3));
+            offset += unitScale + 2f;
+        }
+
+        // Parkings
+        for (int i = 0; i < ${parkings}; i++)
+        {
+            CreateCube("Parking_" + (i+1), new Vector3(offset, 0, 0), new Vector3(unitScale * 1.5f, unitScale, 2));
+            offset += unitScale + 3f;
+        }
+
+        // Balconies
+        for (int i = 0; i < ${balconies}; i++)
+        {
+            CreateCube("Balcony_" + (i+1), new Vector3(offset, 0, 0), new Vector3(unitScale * 0.8f, unitScale * 0.8f, 2));
+            offset += unitScale + 2f;
+        }
+
+        // Bathrooms
+        for (int i = 0; i < ${bathrooms}; i++)
+        {
+            CreateCube("Bathroom_" + (i+1), new Vector3(offset, 0, 0), new Vector3(unitScale * 0.9f, unitScale * 0.9f, 3));
+            offset += unitScale + 2f;
+        }
+
+        // Halls
+        for (int i = 0; i < ${halls}; i++)
+        {
+            CreateCube("Hall_" + (i+1), new Vector3(offset, 0, 0), new Vector3(unitScale * 2f, unitScale * 1.5f, 3));
+            offset += unitScale + 4f;
+        }
+
+        // Bedrooms
+        for (int i = 0; i < ${bedrooms}; i++)
+        {
+            CreateCube("Bedroom_" + (i+1), new Vector3(offset, 0, 0), new Vector3(unitScale * 1.2f, unitScale, 3));
+            offset += unitScale + 3f;
+        }
+
+        // Other room
+        if (!string.IsNullOrEmpty("${other}"))
+        {
+            CreateCube("${other}", new Vector3(offset, 0, 0), new Vector3(unitScale, unitScale, 3));
+        }
+    }
+
+    void CreateCube(string name, Vector3 position, Vector3 scale)
+    {
+        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        cube.transform.position = position;
+        cube.transform.localScale = scale;
+        cube.name = name;
+    }
+}`;
+
+      document.getElementById("output").textContent = code;
+    }
+  </script>
+</body>
+</html>
