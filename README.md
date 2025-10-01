@@ -19,6 +19,11 @@
 6. Start the React app:
    - `npm run dev`
 
+
+## Note:
+1. Avoided pushing .glb, .obj and .mtl files into github.
+2. Also avoided pushing .png to github.
+
 ## Text-to-3D models:
 1. [Robolox Cube](https://github.com/Roblox/cube)
 2. OpenAI - [HuggingFace](https://huggingface.co/openai/shap-e), [GitHub](https://github.com/openai/shap-e)
