@@ -1,8 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axiosInstance from "./../utils/axios.utils.js";
 
-
 export default function Home() {
+  const navigate = useNavigate();
   const [land, setLand] = useState({ length: "", width: "" });
   const [bedrooms, setBedrooms] = useState([{ length: "", width: "", balcony: false, bathroom: { included: false, length: "", width: "" } }]);
   const [livingRoom, setLivingRoom] = useState({ length: "", width: "", dining: false, balcony: false, bathroom: { included: false, length: "", width: "" } });
@@ -366,7 +367,7 @@ export default function Home() {
             ></model-viewer>
 
             {/* Download button */}
-            <div className="mt-6 flex justify-center gap-6">
+            <div className="mt-6 flex justify-around gap-6">
               <a href={`/obj/house_${n[0]}_${n[1]}.obj`} download="floorplan.obj">
                 <button className="py-2 px-6 bg-indigo-600 hover:bg-indigo-700 transition text-white rounded-lg font-medium shadow-md">
                   Download OBJ file
@@ -378,6 +379,10 @@ export default function Home() {
                   Download MTL file
                 </button>
               </a>
+
+              <div className="">
+                <button onClick={() => navigate(`/walkthrough${modelUrl.split(".")[0]}`)}>Try Walkthrough</button>
+              </div>
             </div>
           </>
         ) : (
@@ -392,6 +397,9 @@ export default function Home() {
           </>
         )}
       </div>
+
+      {/* {modelUrl && <Walkthrough modelUrl={modelUrl} />} */}
+
     </div>
   );
 }
