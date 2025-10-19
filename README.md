@@ -1,4 +1,20 @@
 
+## Prerequisites:
+1. Make sure the env file has the following variables set:
+```
+PORT=8000
+CLIENT_URL=http://localhost:5173
+SERVER_URL=http://localhost:
+```
+2. In public folder of client, add glb files which will be served statically. The naming convention is as follows: `house_<room_number>_<number>.glb` where room_number is the number of rooms in the house and number is a unique identifier for that specific model. For example, `house_3_1.glb` represents a 3-room house model with identifier 1.
+3. In server/app.py, update the following lines as per the number of glb files added in client/public folder:
+```python
+j = j % 4 + 1  # line 136
+i = i % 4 + 1  # line 140
+```
+- here, i represents the a house having 1 bedroom, j represents a house having 2 bedrooms and so on. If have a house with different number of bedrooms, introduce new variables accordingly.
+- Also the number 4 represents the total number unique models available for that specific number of bedrooms. Update this number as per the number of models you have.
+
 ## Running the app:
 1. Fork and clone the repo.
 2. Navigate to `server` folder and create a virtual environment:
