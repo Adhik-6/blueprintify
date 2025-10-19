@@ -133,11 +133,11 @@ def get_sample_model():
     z=1
     if n > 1:
         global j
-        j = j % 3 + 1
+        j = j % 4 + 1
         z = j
     else:
         global i
-        i = i % 3 + 1
+        i = i % 4 + 1
         z = i
 
     try:

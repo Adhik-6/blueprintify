@@ -368,20 +368,16 @@ export default function Home() {
 
             {/* Download button */}
             <div className="mt-6 flex justify-around gap-6">
-              <a href={`/obj/house_${n[0]}_${n[1]}.obj`} download="floorplan.obj">
+              <a href={`/house_${n[0]}_${n[1]}.glb`} download="floorplan.glb">
                 <button className="py-2 px-6 bg-indigo-600 hover:bg-indigo-700 transition text-white rounded-lg font-medium shadow-md">
-                  Download OBJ file
+                  Download GLB file
                 </button>
               </a>
               
-              <a href={`/obj/house_${n[0]}_${n[1]}.mtl`} download="floorplan.mtl">
-                <button className="py-2 px-6 bg-indigo-600 hover:bg-indigo-700 transition text-white rounded-lg font-medium shadow-md">
-                  Download MTL file
-                </button>
-              </a>
-
               <div className="">
-                <button onClick={() => navigate(`/walkthrough${modelUrl.split(".")[0]}`)}>Try Walkthrough</button>
+                <button onClick={() => navigate(`/walkthrough${modelUrl.split(".")[0]}`)}>
+                  Try Walkthrough
+                </button>
               </div>
             </div>
           </>

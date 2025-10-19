@@ -5,17 +5,16 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
 
 export default function Walkthrough() {
-    const {id} = useParams()
+    const { id } = useParams();
     const [modelUrl, setModelUrl] = useState(`/${id}.glb`);
 
     useEffect(() => setModelUrl(`/${id}.glb`), [id]);
 
-    // console.log(modelUrl)
-
     useEffect(() => {
-        const scene = new THREE.Scene();
+        const container = document.getElementById("walkthrough");
+        if (!container) return;
 
-        // 🌌 Sky blue background
+        const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x87ceeb);
 
         const camera = new THREE.PerspectiveCamera(
@@ -26,60 +25,55 @@ export default function Walkthrough() {
         );
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
-        document.getElementById("walkthrough").appendChild(renderer.domElement);
+        container.appendChild(renderer.domElement);
 
-        // ☀️ Sunlight
         const light = new THREE.DirectionalLight(0xffffff, 1);
         light.position.set(10, 20, 10);
         scene.add(light);
 
-        // 🌍 Hemisphere light (blue sky + green ground bounce)
         const hemiLight = new THREE.HemisphereLight(0x87ceeb, 0x228B22, 0.6);
         scene.add(hemiLight);
 
-        // 🌱 Grass floor
         const floor = new THREE.Mesh(
             new THREE.PlaneGeometry(1000, 1000),
-            new THREE.MeshStandardMaterial({ color: 0x228B22 }) // grassy green
+            new THREE.MeshStandardMaterial({ color: 0x228B22 })
         );
         floor.rotation.x = -Math.PI / 2;
         floor.receiveShadow = true;
         scene.add(floor);
 
-        // 🏠 Load model
         const loader = new GLTFLoader();
         loader.load(modelUrl, (gltf) => {
             const model = gltf.scene;
-
-            // Scale
             model.scale.set(10, 10, 10);
 
-            // Center and lift
             const box = new THREE.Box3().setFromObject(model);
             const center = box.getCenter(new THREE.Vector3());
             const size = box.getSize(new THREE.Vector3());
 
             model.position.sub(center);
             model.position.y += size.y / 2;
-
             scene.add(model);
 
-            // 🎥 Camera start (4m tall, a bit back)
             const distance = Math.max(size.x, size.z) * 1.5;
-            camera.position.set(0, 2, distance);   // height = 4m
+            camera.position.set(0, 3, distance); // ⬆️ taller (4m height)
             camera.lookAt(0, size.y * 0.5, 0);
         });
 
-        // 🎮 FPS controls
         const controls = new PointerLockControls(camera, renderer.domElement);
-        document.addEventListener("click", () => controls.lock());
+        const onClick = () => controls.lock();
+        document.addEventListener("click", onClick);
 
-        // Keyboard movement
         const keys = {};
-        document.addEventListener("keydown", (e) => (keys[e.code] = true));
-        document.addEventListener("keyup", (e) => (keys[e.code] = false));
+        const onKeyDown = (e) => (keys[e.code] = true);
+        const onKeyUp = (e) => (keys[e.code] = false);
+        document.addEventListener("keydown", onKeyDown);
+        document.addEventListener("keyup", onKeyUp);
+
+        let isMounted = true;
 
         function animate() {
+            if (!isMounted) return;
             requestAnimationFrame(animate);
             if (controls.isLocked) {
                 const speed = 0.1;
@@ -92,9 +86,20 @@ export default function Walkthrough() {
         }
         animate();
 
+        return () => {
+            isMounted = false;
 
-        // Cleanup
-        return () => (document.getElementById("walkthrough").innerHTML = "");
+            // 🧹 Remove listeners and renderer safely
+            document.removeEventListener("click", onClick);
+            document.removeEventListener("keydown", onKeyDown);
+            document.removeEventListener("keyup", onKeyUp);
+
+            if (container && renderer.domElement.parentNode === container) {
+                container.removeChild(renderer.domElement);
+            }
+
+            renderer.dispose();
+        };
     }, [modelUrl]);
 
     return <div id="walkthrough" style={{ width: "100%", height: "600px" }} />;
