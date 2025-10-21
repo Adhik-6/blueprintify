@@ -124,7 +124,7 @@ Design:
         "prompt": prompt
     }), 200
 
-i = j = 1
+i = j = 0
 @app.route("/api/get-sample-model", methods=["POST"])
 def get_sample_model():
     data = request.get_json()
